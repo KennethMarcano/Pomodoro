@@ -1,13 +1,95 @@
-body {
+
+
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  outline: none;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background: #2bb8c8;
+  transition: background-color 300ms ease-in-out;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.pomodoro h2{
+  font-size: 40px;
+  font-weight: 300;
+}
+
+.pomodoro .timer{
+  font-size: 80px;
+  margin: 10px auto;
+}
+
+.pomodoro .details .timer{
+  display: inline;
+  font-size: 15px
+}
+
+.pomodoro{
+  max-height: max-content;
+  margin: 30px 20px;
+  padding: 20px;
+  background: #ede5ed;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.buttons{
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 10px auto;
+}
+
+.buttons button{
+  border-radius: 5px;
+  border: none;
+  background: #959aac;
+  margin: 0 20px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 600;
+  color: #ede5ed;
+  transition: background-color 300ms ease-in-out;
+  &:hover{
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.working{
+    background: #0a3755;
+  }
+
+.working .pomodoro button{
+    background: #0a3755;
+    &:hover{
+      background: rgba(0, 0, 0, 0.6);
+    }
+  }
+
+.hidden {
+    display: none;
+  }
+
+.details {
+  width: 100%;
+}
+.details p, div {
+  margin: 10px;
 }
