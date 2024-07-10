@@ -56,7 +56,7 @@ export function PomodoroTimer(props: Props): JSX.Element {
       if (isWorking) setTotalTime(totalTime + 1);
       setMainTime(mainTime - 1);
     },
-    isPlaying ? 50 : null,
+    isPlaying ? 1000 : null,
   );
 
   function work(): void {
@@ -81,11 +81,24 @@ export function PomodoroTimer(props: Props): JSX.Element {
     setIsPlayingButton(!isPlaying);
   }
 
+  function setPomodoro(): void {
+    const timer = document.querySelector('#timer') as HTMLInputElement;
+    const shortRest = document.querySelector('#shortRest') as HTMLInputElement;
+    const longRest = document.querySelector('#longRest') as HTMLInputElement;
+    const cycles = document.querySelector('#cycles') as HTMLInputElement;
+    console.log(timer.value, shortRest.value, longRest.value, cycles.value);
+  }
+
   return (
     <div className="pomodoro">
       <h2>You are: {isWorking ? 'working' : 'resting'}</h2>
       <Timer showHours={false} mainTime={mainTime} />
       <div className="buttons">
+        <Button
+          handleClick={setPomodoro}
+          text="Set up"
+          className="restButton"
+        />
         <Button handleClick={work} text="Work" className="workButton" />
         <Button handleClick={rest} text="Rest" className="restButton" />
         <Button
@@ -95,12 +108,28 @@ export function PomodoroTimer(props: Props): JSX.Element {
         />
       </div>
       <div className="details">
-        <h4>Details:</h4>
-        <p>Cycles: {Math.trunc(totalPomodoros / props.numberOfCycles)}</p>
-        <div>
-          Total working time: <Timer showHours={true} mainTime={totalTime} />
+        <div className="info">
+          <h4>Details</h4>
+          <p>Cycles: {Math.trunc(totalPomodoros / props.numberOfCycles)}</p>
+          <p>
+            Total working time: <Timer showHours={true} mainTime={totalTime} />
+          </p>
+          <p>Time blocks (promodoros): {totalPomodoros}</p>
         </div>
-        <p>Time blocks (promodoros): {totalPomodoros}</p>
+
+        <div className="set-pomodoro">
+          <h4>Set pomodoro</h4>
+          <div className="numbers">
+            <label>Timer (min):</label>
+            <input id="timer" type="text" />
+            <label>Short resting (min):</label>
+            <input id="shortRest" type="text" />
+            <label>Long resting (min):</label>
+            <input id="longRest" type="text" />
+            <label>Cycles:</label>
+            <input id="cycles" type="text" />
+          </div>
+        </div>
       </div>
     </div>
   );
