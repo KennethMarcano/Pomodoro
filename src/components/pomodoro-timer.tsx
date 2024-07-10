@@ -1,7 +1,9 @@
 import React from 'react';
+import { toast } from 'react-toastify';
 import { useInterval } from '../hooks/use-interval';
 import { Button } from './button';
 import { Timer } from './timer';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const sonStart = require('../sounds/src_sounds_bell-start.mp3');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -18,13 +20,21 @@ interface Props {
 }
 
 export function PomodoroTimer(props: Props): JSX.Element {
-  const numberCyclesTrue = props.numberOfCycles - 1;
   const [isWorking, setIsWorking] = React.useState(false);
-  const [numberCycles, setNumberCycles] = React.useState(numberCyclesTrue);
-  const [mainTime, setMainTime] = React.useState(props.pomodoroTime);
   const [isPlaying, setIsPlayingButton] = React.useState(false);
   const [totalTime, setTotalTime] = React.useState(0);
   const [totalPomodoros, setTotalPomodoros] = React.useState(0);
+  const [pomodoroTime, setPomodoroTime] = React.useState(props.pomodoroTime);
+  const [shortRestingTime, setShortRestingTime] = React.useState(
+    props.shortRestingTime,
+  );
+  const [longRestingTime, setLongRestingTime] = React.useState(
+    props.longRestingTime,
+  );
+  const [numberCycles, setNumberCycles] = React.useState(
+    props.numberOfCycles - 1,
+  );
+  const [mainTime, setMainTime] = React.useState(pomodoroTime);
 
   React.useEffect(() => {
     if (isWorking) document.body.classList.add('working');
@@ -38,18 +48,18 @@ export function PomodoroTimer(props: Props): JSX.Element {
           setTotalPomodoros(totalPomodoros + 1);
           if (numberCycles !== 0) {
             playFinish.play();
-            setMainTime(props.shortRestingTime);
+            setMainTime(shortRestingTime);
             setIsWorking(false);
             return setNumberCycles(numberCycles - 1);
           } else {
             playFinish.play();
-            setNumberCycles(numberCyclesTrue);
+            setNumberCycles(numberCycles);
             setIsWorking(false);
-            return setMainTime(props.longRestingTime);
+            return setMainTime(longRestingTime);
           }
         } else {
           playStart.play();
-          setMainTime(props.pomodoroTime);
+          setMainTime(pomodoroTime);
           return setIsWorking(true);
         }
       }
@@ -63,8 +73,8 @@ export function PomodoroTimer(props: Props): JSX.Element {
     playStart.play();
     setIsPlayingButton(true);
     setIsWorking(true);
-    setMainTime(props.pomodoroTime);
-    setNumberCycles(numberCyclesTrue);
+    setMainTime(pomodoroTime);
+    setNumberCycles(numberCycles);
     const playPause = document.querySelector(
       '.playingButton',
     ) as HTMLButtonElement;
@@ -74,7 +84,7 @@ export function PomodoroTimer(props: Props): JSX.Element {
   function rest(): void {
     playFinish.play();
     setIsPlayingButton(true);
-    setMainTime(props.shortRestingTime);
+    setMainTime(shortRestingTime);
   }
 
   function playing(): void {
@@ -83,10 +93,37 @@ export function PomodoroTimer(props: Props): JSX.Element {
 
   function setPomodoro(): void {
     const timer = document.querySelector('#timer') as HTMLInputElement;
+    const timerNumber = parseFloat(timer.value);
     const shortRest = document.querySelector('#shortRest') as HTMLInputElement;
+    const shortRestNumber = parseFloat(shortRest.value);
     const longRest = document.querySelector('#longRest') as HTMLInputElement;
+    const longRestNumber = parseFloat(longRest.value);
     const cycles = document.querySelector('#cycles') as HTMLInputElement;
-    console.log(timer.value, shortRest.value, longRest.value, cycles.value);
+    const numberCycles = parseFloat(cycles.value);
+    if (
+      isNaN(timerNumber) ||
+      isNaN(shortRestNumber) ||
+      isNaN(longRestNumber) ||
+      isNaN(numberCycles)
+    ) {
+      toast.error('Valeus incorrects');
+      return;
+    }
+    toast.success('set');
+    setPomodoroTime(toSecond(timerNumber));
+    setMainTime(pomodoroTime);
+    setIsWorking(false);
+    setShortRestingTime(toSecond(shortRestNumber));
+    setLongRestingTime(toSecond(longRestNumber));
+    setNumberCycles(numberCycles - 1);
+  }
+
+  function toSecond(x: number): number {
+    return x * 60;
+  }
+
+  function toStringMin(x: number): string {
+    return (x / 60).toString();
   }
 
   return (
@@ -120,13 +157,13 @@ export function PomodoroTimer(props: Props): JSX.Element {
         <div className="set-pomodoro">
           <h4>Set pomodoro</h4>
           <div className="numbers">
-            <label>Timer (min):</label>
+            <label>Timer ({toStringMin(pomodoroTime)} m):</label>
             <input id="timer" type="text" />
-            <label>Short resting (min):</label>
+            <label>short resting ({toStringMin(shortRestingTime)} m):</label>
             <input id="shortRest" type="text" />
-            <label>Long resting (min):</label>
+            <label>Long resting ({toStringMin(longRestingTime)} m):</label>
             <input id="longRest" type="text" />
-            <label>Cycles:</label>
+            <label>Cycles ({(numberCycles + 1).toString()}):</label>
             <input id="cycles" type="text" />
           </div>
         </div>
